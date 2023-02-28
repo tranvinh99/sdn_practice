@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+
+<%- include('./components/head') %>
+
+    <body>
+        <% if(error_msg !='' ){ %>
+            <h1 class="text-danger">
+                <%= error_msg %>
+            </h1>
+            <% } %>
+                <div class="page-container">
+                    <nav class="navbar navbar-expand-lg navbar-light " style="background-color: #ffffff;">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">
+                                <img src="https://img.freepik.com/premium-vector/fifa-world-cup-qatar-2022-logo-stylized-vector-isolated-illustration-with-football_633888-126.jpg?w=2000"
+                                    alt="" width="50" height="50">
+                            </a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/players">Players</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/nations">Nations</a>
+                                    </li>
+
+                                </ul>
+                                <span class="navbar-text">
+                                    <a class="btn btn-primary text-dark " href="#" role="button">Log in</a>
+                                </span>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+
+                <div class="page-container">
+                    <table id="example" class="table table-striped" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Nations</th>
+                                <th>description</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% nations.forEach(function(nation) { %>
+                                <tr>
+                                    <td>
+                                        <%= nation.name %>
+                                    </td>
+                                    <td>
+                                        <%= nation.description %>
+                                    </td>
+                                    <td>
+                                        <div class="buttons are-small">
+                                            <a href="./nations/edit/<%=nation.id %>"><button
+                                                    class="button is-warning is-light">Edit</button></a>
+                                            <a href="./nations/delete/<%=nation.id %>"><button
+                                                    onclick="return confirm('Are you sure ???')"
+                                                    class="button is-danger is-light">Delete</button></a>
+
+                                        </div></a>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Nations</th>
+                                <th>description</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+
+
+
+                <!-- Modal -->
+                <!-- Large modal -->
+                <button style="position: absolute; bottom: 20px; right: 20px;" type="button" class="btn btn-primary"
+                    id="modal-btn" data-toggle="modal" data-target="#nation-create-form">Create Nation</button>
+
+                <div id="nation-create-form" class="modal" tabindex="-1" role="dialog"
+                    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content p-5">
+                            <h3 class="mb-2">Create nation</h3>
+                            <form method="post" action="/nations">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Nation</label>
+                                    <input type="text" class="form-control" id="name" required name="name"
+                                        aria-describedby="hint">
+                                    <div id="hint" class="form-text">e.g. Brazil</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <input type="text" class="form-control" required name="description"
+                                        id="description">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                            <!-- <form method="post" action="/nations">
+                                    <div class="field is-horizontal">
+                                        <div class="field-label is-normal">
+                                            <label class="label">Nation</label>
+                                        </div>
+                                        <div class="field-body">
+                                            <div class="field">
+                                                <div class="control">
+                                                    <input class="input is-info" required name="name" type="text"
+                                                        placeholder="e.g. Brazil">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field is-horizontal">
+                                        <div class="field-label is-normal">
+                                            <label class="label">Description</label>
+                                        </div>
+                                        <div class="field-body">
+                                            <div class="field">
+                                                <div class="control">
+                                                    <input class="input is-info" required name="description" type="text"
+                                                        placeholder="Let's description">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field is-horizontal" style="margin-left: 120px;">
+                                        <div class="field-body">
+                                            <div class="field">
+                                                <div class="control">
+                                                    <button class="button is-primary" type="submit"
+                                                        style="font-weight: 700">
+                                                        Create
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form> -->
+                        </div>
+                    </div>
+                </div>
+
+                <%- include('./components/bootstrap-cdn') %>
+                    <script>
+                        $(document).ready(function () {
+                            $('#example').DataTable();
+                        });
+                        $(document).on('click', '#modal-btn', () => {
+                            $("#nation-create-form").modal('toggle')
+                        })
+
+
+                    </script>
+
+
+    </body>
+
+</html>

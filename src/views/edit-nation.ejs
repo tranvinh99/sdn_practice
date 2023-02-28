@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./components/head') %>
+
+    <body>
+        <% if(error_msg !='' ){ %>
+            <h1 class="text-danger">
+                <%= error_msg %>
+            </h1>
+            <% } %>
+                <div class="page-container">
+                    <h3 class="mb-2">
+                        Edit <%= nation.name %>
+                    </h3>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nation</label>
+                            <input type="text" class="form-control" id="name" required name="name"
+                                value="<%= nation.name %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" class="form-control" required name="description"
+                                value="<%= nation.description %>" id="description">
+                        </div>
+                        <button type="submit" class="btn btn-primary">save</button>
+                    </form>
+                </div>
+
+
+
+
+
+                <%- include('./components/bootstrap-cdn') %>
+    </body>
+
+
+</html>
