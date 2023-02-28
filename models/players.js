@@ -14,7 +14,7 @@ export default mongoose.model(
         ref: "nations",
         require: true,
       },
-      isCaption: { type: Boolean, default: false },
+      isCaptain: { type: Boolean, default: false },
     },
     { timestamps: true }
   )

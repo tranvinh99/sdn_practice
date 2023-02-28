@@ -1,4 +1,5 @@
 import { Player, Nation } from "../models/index.js";
+
 let clubData = [
   { id: "1", name: "Arsenal" },
   { id: "2", name: "Manchester United" },
@@ -51,7 +52,7 @@ const index = (req, res, next) => {
       Player.find({})
         .populate("nation", ["name", "description"])
         .then((players) => {
-          res.render("playerSite", {
+          res.render("players-site", {
             title: "The list of Players",
             players: players,
             positionList: postitionData,
@@ -94,8 +95,9 @@ const createPlayer = (req, res, next) => {
     nation: req.body.nation,
     isCaptain: req.body.isCaptain === undefined ? false : true,
   };
+  debugger;
   console.log("data: ", data);
-  const player = new Players(data);
+  const player = new Player(data);
   Player.find({ name: player.name }).then((playerCheck) => {
     if (playerCheck.length > 0) {
       req.flash("error_msg", "Duplicate player name!");
@@ -109,6 +111,57 @@ const createPlayer = (req, res, next) => {
     }
   });
 };
+const formEdit = (req, res, next) => {
+  const playerId = req.params.playerId;
+  Nation.find({})
+    .then((nations) => {
+      Player.findById(playerId)
+        .then((player) => {
+          res.render("editPlayer", {
+            title: "Detail of player",
+            player: player,
+            positionList: postitionData,
+            clubList: clubData,
+            nationsList: nations,
+          });
+        })
+        .catch(next);
+    })
+    .catch(next);
+};
+const editPlayer = (req, res, next) => {
+  var data;
+  const { name, career, position, goals, nation, isCaptain } = req.body;
+  if (!req.file) {
+    data = {
+      name,
+      career,
+      position,
+      goals,
+      nation,
+      isCaptain: isCaptain === undefined ? false : true,
+    };
+  } else {
+    data = {
+      name: name,
+      image: `/images/Players/${req.file.originalname}`,
+      career: career,
+      position: position,
+      goals: goals,
+      nation: nation,
+      isCaptain: isCaptain === undefined ? false : true,
+    };
+  }
+  Player.updateOne({ _id: req.params.playerId }, data)
+    .then(() => {
+      res.redirect("/players");
+    })
+    .catch((err) => {
+      console.log("error update: ", err);
+      req.flash("error_msg", "Duplicate player name!");
+      res.redirect(`/players/edit/${req.params.playerId}`);
+    });
+};
 const findPlayerById = (req, res, next) => {
   const playerId = req.params.playerId;
   Player.findById(playerId)
@@ -120,7 +173,15 @@ const findPlayerById = (req, res, next) => {
     })
     .catch(next);
 };
+const deletePlayer = (req, res, next) => {
+  Player.findByIdAndDelete({ _id: req.params.playerId })
+    .then(() => res.redirect("/players"))
+    .catch(next);
+};
 export default {
   index,
   createPlayer,
+  formEdit,
+  deletePlayer,
+  editPlayer,
 };
