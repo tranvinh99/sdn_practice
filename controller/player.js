@@ -1,4 +1,4 @@
-import { Player, Nation } from "../models/index.js";
+import { Player, Nation, User } from "../models/index.js";
 
 let clubData = [
   { id: "1", name: "Arsenal" },
@@ -21,30 +21,7 @@ let postitionData = [
   { id: "8", name: "Right Midfielder" },
   { id: "9", name: " Attacker " },
 ];
-const home = (req, res, next) => {
-  Nation.find({})
-    .then((nations) => {
-      Player.find({})
-        .populate("nation", ["name", "description"])
-        .then((players) => {
-          res.render("index", {
-            title: "The list of Players",
-            players: players,
-            positionList: postitionData,
-            clubList: clubData,
-            nationsList: nations,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          next();
-        });
-    })
-    .catch((err) => {
-      console.log(err);
-      next();
-    });
-};
+
 const index = (req, res, next) => {
   console.log(req.session);
   Nation.find({})
@@ -58,6 +35,7 @@ const index = (req, res, next) => {
             positionList: postitionData,
             clubList: clubData,
             nationsList: nations,
+            isLogin: req.session.passport === undefined ? false : true,
           });
         })
         .catch((err) => {
@@ -94,6 +72,7 @@ const createPlayer = (req, res, next) => {
     goals: req.body.goals,
     nation: req.body.nation,
     isCaptain: req.body.isCaptain === undefined ? false : true,
+    isLogin: req.session.passport === undefined ? false : true,
   };
   debugger;
   console.log("data: ", data);
@@ -123,6 +102,7 @@ const formEdit = (req, res, next) => {
             positionList: postitionData,
             clubList: clubData,
             nationsList: nations,
+            isLogin: req.session.passport === undefined ? false : true,
           });
         })
         .catch(next);
@@ -150,6 +130,7 @@ const editPlayer = (req, res, next) => {
       goals: goals,
       nation: nation,
       isCaptain: isCaptain === undefined ? false : true,
+      isLogin: req.session.passport === undefined ? false : true,
     };
   }
   Player.updateOne({ _id: req.params.playerId }, data)
@@ -162,14 +143,25 @@ const editPlayer = (req, res, next) => {
       res.redirect(`/players/edit/${req.params.playerId}`);
     });
 };
-const findPlayerById = (req, res, next) => {
+const playerDetail = (req, res, next) => {
   const playerId = req.params.playerId;
-  Player.findById(playerId)
-    .then((player) => {
-      res.render("player-detail", {
-        title: player.name,
-        player,
-      });
+  console.log(playerId);
+  Nation.find({})
+    .then((nations) => {
+      Player.findById(playerId)
+        .populate("nation", "name")
+        .then((player) => {
+          console.log(player);
+          res.render("playerDetail", {
+            title: "The detail of Player",
+            player: player,
+            positionList: postitionData,
+            clubList: clubData,
+            nationsList: nations,
+            isLogin: req.session.passport === undefined ? false : true,
+          });
+        })
+        .catch(next);
     })
     .catch(next);
 };
@@ -178,10 +170,37 @@ const deletePlayer = (req, res, next) => {
     .then(() => res.redirect("/players"))
     .catch(next);
 };
+const homePage = (req, res, next) => {
+  Nation.find({})
+    .then((nations) => {
+      Player.find({ isCaptain: true })
+        .populate("nation", ["name", "description"])
+        .then((players) => {
+          res.render("index", {
+            title: "The list of Players",
+            players: players,
+            positionList: postitionData,
+            clubList: clubData,
+            nationsList: nations,
+            isLogin: req.session.passport === undefined ? false : true,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          next();
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      next();
+    });
+};
 export default {
   index,
   createPlayer,
   formEdit,
   deletePlayer,
   editPlayer,
+  homePage,
+  playerDetail,
 };

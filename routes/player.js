@@ -1,6 +1,7 @@
 import { PlayerController } from "../controller/index.js";
 import multer, { diskStorage } from "multer";
 import express from "express";
+import { ensureAuthenticated, requireRole } from "../config/midleware.js";
 const PlayerRoute = express.Router();
 const storage = diskStorage({
   destination: function (req, file, cb) {
@@ -20,11 +21,25 @@ const storage = diskStorage({
 const upload = multer({ storage: storage });
 
 PlayerRoute.route("/")
-  .get(PlayerController.index)
-  .post(upload.single("file"), PlayerController.createPlayer);
+  .get(ensureAuthenticated, requireRole, PlayerController.index)
+  .post(
+    ensureAuthenticated,
+    requireRole,
+    upload.single("file"),
+    PlayerController.createPlayer
+  );
 PlayerRoute.route("/edit/:playerId")
-  .get(PlayerController.formEdit)
-  .post(upload.single("file"), PlayerController.editPlayer);
-PlayerRoute.route("/delete/:playerId").get(PlayerController.deletePlayer);
-
+  .get(ensureAuthenticated, requireRole, PlayerController.formEdit)
+  .post(
+    ensureAuthenticated,
+    requireRole,
+    upload.single("file"),
+    PlayerController.editPlayer
+  );
+PlayerRoute.route("/delete/:playerId").get(
+  ensureAuthenticated,
+  requireRole,
+  PlayerController.deletePlayer
+);
+PlayerRoute.route("/:playerId").get(PlayerController.playerDetail);
 export default PlayerRoute;

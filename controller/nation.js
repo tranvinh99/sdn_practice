@@ -6,6 +6,7 @@ const index = (req, res, next) => {
       res.render("nations-site", {
         title: "The list of Nations",
         nations: nations,
+        isLogin: req.session.passport === undefined ? false : true,
       });
     })
     .catch(next);
@@ -32,6 +33,7 @@ const navNationDetail = (req, res, next) => {
       res.render("edit-nation", {
         title: "The detail of Nation",
         nation: nation,
+        isLogin: req.session.passport === undefined ? false : true,
       });
     })
     .catch(next);

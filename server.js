@@ -4,13 +4,15 @@ import path from "path";
 import { fileURLToPath } from "url";
 import morgan from "morgan";
 import connect from "./db/db.js";
-import { NationRoute, UserRoute, PlayerRoute } from "./routes/index.js";
+import Route, { NationRoute, UserRoute, PlayerRoute } from "./routes/index.js";
 import cors from "cors";
 import bodyParser from "body-parser";
 import flash from "connect-flash";
 import session from "express-session";
 import passport from "passport";
 import cookieParser from "cookie-parser";
+import passportLocal from "./config/passport.js";
+passportLocal(passport);
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -53,10 +55,7 @@ app.set("view engine", "ejs");
 app.use("/users", UserRoute);
 app.use("/nations", NationRoute);
 app.use("/players", PlayerRoute);
-
-app.get("/", (req, res) => {
-  res.render("index");
-});
+app.use("/", Route);
 
 app.listen(port, async (req, res) => {
   await connect();
