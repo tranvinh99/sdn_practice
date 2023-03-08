@@ -1,49 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include ('./patials/head') %>
+<%- include('./components/head') %>
 
-    <body style=" height: 100vh;">
-        <div class="container is-fluid" style="display: flex; justify-content: center; padding-top: 100px;">
-            <div>
-                <table id="mytable" class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                    style="width: 1000px;">
-                    <thead style="height: 40px; background-color: aqua; ">
+    <body>
+        <%- include('./components/navbar') %>
+            <div class="page-container">
+                <table id="example" class="table table-striped" style="width:100%">
+                    <thead>
                         <tr>
-
-                            <th style="text-align: center;">User Name</th>
-                            <th style="text-align: center;">Name</th>
-                            <th style="text-align: center;">Year of birth</th>
-                            <th style="text-align: center;">Admin</th>
+                            <th>User Name</th>
+                            <th>Name</th>
+                            <th>Date of birth</th>
+                            <th>Admin</th>
                         </tr>
                     </thead>
-                    <tbody style="text-align: center;">
+                    <tbody>
                         <% users.forEach(function(user) { %>
                             <tr>
-                                <td style="padding-top: 24px;">
+                                <td>
                                     <%= user.username %>
                                 </td>
-                                <td style="padding-top: 24px;">
+                                <td>
                                     <%= user.name %>
                                 </td>
-                                <td style="padding-top: 24px;">
+                                <td>
                                     <%= user.YOB %>
                                 </td>
-                                <td style="padding-top: 24px;">
+                                <td>
                                     <%=user.isAdmin===true ? 'True' : 'No' %>
                                 </td>
                             </tr>
                             <% }) %>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Name</th>
+                            <th>Date of birth</th>
+                            <th>Admin</th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
 
-        </div>
-    </body>
-    <script>
 
-        $(document).ready(function () {
-            $('#mytable').DataTable();
-        });
-    </script>
+            <%- include('./components/bootstrap-cdn') %>
+                <script>
+                    $(document).ready(function () {
+                        $('#example').DataTable();
+                    });
+                </script>
+    </body>
 
 </html>

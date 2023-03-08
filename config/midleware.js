@@ -1,6 +1,6 @@
 export const redirectLogin = (req, res, next) => {
   debugger;
-  console.log(req.user);
+  console.log("file: midleware.js:4 ~ redirectLogin ~ req.user:", req.user);
   if (req.user && req.user.role === "admin") {
     req.flash("success_msg", "Login successfull");
     res.redirect("/players");

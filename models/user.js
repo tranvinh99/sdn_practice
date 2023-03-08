@@ -19,7 +19,7 @@ export default mongoose.model(
       },
       YOB: {
         type: String,
-        default: "1999",
+        default: "1990-01-01",
       },
       isAdmin: {
         type: Boolean,
